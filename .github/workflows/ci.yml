@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,27 +18,21 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: 18
-        cache: 'pnpm'
-
-    - name: Enable corepack
-      run: corepack enable
-
-    - name: Install pnpm
-      run: corepack prepare pnpm@latest --activate
+        cache: 'npm'
 
     - name: Install dependencies
-      run: pnpm install
+      run: npm install
 
     - name: Lint
-      run: pnpm lint
+      run: npm run lint
 
     - name: Build
-      run: pnpm build
-      
+      run: npm run build
+
     - name: Install Railway CLI
-      run: npm i -g @railway/cli
+      run: npm install -g @railway/cli
 
     - name: Deploy to Railway
       run: railway up
       env:
-        RAILWAY_TOKEN: 57f82cef-b8d5-4bf4-a515-69f47f079e2a
+        RAILWAY_TOKEN: 60807bc6-36de-4228-8af3-4c8742ae5e22
