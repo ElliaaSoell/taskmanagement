@@ -34,3 +34,11 @@ jobs:
 
     - name: Build
       run: pnpm build
+      
+    - name: Install Railway CLI
+      run: npm i -g @railway/cli
+
+    - name: Deploy to Railway
+      run: railway up
+      env:
+        RAILWAY_TOKEN: 57f82cef-b8d5-4bf4-a515-69f47f079e2a
