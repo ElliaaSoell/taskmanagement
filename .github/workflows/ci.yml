@@ -1,4 +1,4 @@
-name: Next.js CI with PNPM and Railway
+name: CI + Deploy to Railway
 
 on:
   push:
@@ -11,33 +11,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: 📥 Checkout code
+    - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: 🧰 Setup Node.js & pnpm
+    - name: Setup Node.js & pnpm
       uses: actions/setup-node@v3
       with:
         node-version: 18
         cache: pnpm
 
-    - name: 🔧 Enable Corepack & Install pnpm
+    - name: Enable Corepack & Install pnpm
       run: |
         corepack enable
         corepack prepare pnpm@latest --activate
 
-    - name: 📦 Install dependencies
+    - name: Install dependencies
       run: pnpm install --frozen-lockfile
 
-    - name: 🧹 Run lint
+    - name: Run lint
       run: pnpm run lint
 
-    - name: 🛠️ Build project
+    - name: Build project
       run: pnpm run build
 
-    - name: 🚂 Install Railway CLI
+    - name: Install Railway CLI
       run: pnpm dlx -y @railway/cli install
 
-    - name: 🚀 Deploy to Railway
+    - name: Deploy to Railway
       run: pnpm dlx -y railway up
       env:
-        RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        RAILWAY_TOKEN: 066848ee-2207-4984-b091-392bc244ccb8
