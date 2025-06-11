@@ -1,11 +1,13 @@
-name: CI + Deploy to Railway
+name: CI Only - Lint & Build Check
 
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
-  build-and-deploy:
+  verify-code:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,26 +18,16 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'npm' # Bukan 'pnpm' karena pnpm belum tersedia!
+          cache: 'pnpm'
 
-      - name: 🔧 Install pnpm manually
+      - name: 🔧 Install pnpm & Dependencies
         run: |
           corepack enable
-          corepack prepare pnpm@8.15.4 --activate
+          corepack prepare pnpm@latest --activate
+          pnpm install
 
-      - name: 📦 Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: 🧪 Run lint
+      - name: ✅ Run Lint
         run: pnpm run lint
 
-      - name: 🛠️ Build project
+      - name: 🧪 Build Check
         run: pnpm run build
-
-      - name: 🚂 Install Railway CLI
-        run: pnpm dlx -y @railway/cli install
-
-      - name: 🚀 Deploy to Railway
-        run: pnpm dlx -y railway up
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
