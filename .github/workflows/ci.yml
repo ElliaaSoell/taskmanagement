@@ -1,33 +1,41 @@
-name: CI Only - Lint & Build Check
+name: CI + Deploy to Railway
 
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
 
 jobs:
-  verify-code:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: 🧰 Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: 'pnpm'
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        cache: 'pnpm'
 
-      - name: 🔧 Install pnpm & Dependencies
-        run: |
-          corepack enable
-          corepack prepare pnpm@latest --activate
-          pnpm install
+    - name: Enable Corepack & Install pnpm
+      run: |
+        corepack enable
+        corepack prepare pnpm@latest --activate
 
-      - name: ✅ Run Lint
-        run: pnpm run lint
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
 
-      - name: 🧪 Build Check
-        run: pnpm run build
+    - name: Run lint
+      run: pnpm run lint
+
+    - name: Build project
+      run: pnpm run build
+
+    - name: Install Railway CLI
+      run: pnpm dlx -y @railway/cli install
+
+    - name: Deploy to Railway
+      run: pnpm dlx -y railway up
+      env:
+        RAILWAY_TOKEN: 066848ee-2207-4984-b091-392bc244ccb8
