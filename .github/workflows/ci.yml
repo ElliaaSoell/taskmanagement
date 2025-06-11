@@ -9,33 +9,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 18
-        cache: 'pnpm'
+      - name: 🧰 Setup Node.js (tanpa cache pnpm!)
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
 
-    - name: Enable Corepack & Install pnpm
-      run: |
-        corepack enable
-        corepack prepare pnpm@latest --activate
+      - name: 🔧 Install pnpm via Corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@8.15.4 --activate
 
-    - name: Install dependencies
-      run: pnpm install --frozen-lockfile
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
 
-    - name: Run lint
-      run: pnpm run lint
+      - name: ✅ Lint check
+        run: pnpm run lint
 
-    - name: Build project
-      run: pnpm run build
+      - name: 🔨 Build project
+        run: pnpm run build
 
-    - name: Install Railway CLI
-      run: pnpm dlx -y @railway/cli install
+      - name: 🚂 Install Railway CLI
+        run: pnpm dlx -y @railway/cli install
 
-    - name: Deploy to Railway
-      run: pnpm dlx -y railway up
-      env:
-        RAILWAY_TOKEN: 066848ee-2207-4984-b091-392bc244ccb8
+      - name: 🚀 Deploy to Railway
+        run: pnpm dlx -y railway up
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
